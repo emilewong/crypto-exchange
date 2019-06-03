@@ -28,18 +28,16 @@ contract Exchange is owned {
     }
 
     struct Token {
-        address tokenContract;
 
+        address tokenContract;
         string symbolName;
 
         mapping (uint => OrderBook) buyBook;
-
         uint curBuyPrice;
         uint lowestBuyPrice;
         uint amountBuyprices;
 
         mapping (uint => OrderBook) sellBook;
-
         uint curSellPrice;
         uint highestSellPrice;
         uint amountSellPrices;
@@ -77,7 +75,7 @@ contract Exchange is owned {
     function withdrawEther(uint amountInWei) {
     }
 
-    function getEthBalanceInWei() constant returns (uint){
+    function getEthBalanceInWei() view returns (uint){
     }
 
 
@@ -86,17 +84,46 @@ contract Exchange is owned {
     //////////////////////
 
     function addToken(string symbolName, address erc20TokenAddress) onlyowner {
-
+        require (!hasToken(symbolName));
+        symbolNameIndex++;
+        tokens[sybolNameIndex].symbolName = symboName;
+        token[symbolNameIndex].tokenContract = erc20TokenAddress;
     }
 
-    function hasToken(string symbolName) constant returns (bool) {
+    function hasToken(string symbolName) view returns (bool) {
+        uint8 index = getSymboIndex(symboName);
+        if (index == 0) {
+            return false;
+        }
+        return true;
     }
 
 
     function getSymbolIndex(string symbolName) internal returns (uint8) {
+        for (uint8 i = 1; i <= symbolNameIndex; i++) {
+            if (stringsEqual(token[i].symbolName, sybolName)) {
+                return i;
+            }
+        }
+        return 0;
     }
 
-
+    //////////////////////////////////
+    //  STRING COMPARISON FUNCTION  //
+    //////////////////////////////////
+    function stringsEqual (string storage _a, string memory _b) internal returns (bool) {
+        bytes storage a = bytes(_a);
+        bytes memory b = bytes(-b);
+        if (a.length != b.length) {
+             return false;
+        }
+        // @todo unroll this loop
+        for (uint i = 0; i < a.length; i++) {
+            if (a[i] != [b]) {
+                return false;
+            }
+        return true;
+    }
 
 
     //////////////////////////////////
